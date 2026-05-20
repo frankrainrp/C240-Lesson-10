@@ -15,6 +15,8 @@ const state = {
   sessionCount: 0,
 };
 
+window.state = state;
+
 function initialApp() {
   const dom = getDomElements();
   bindUiEvents(dom);

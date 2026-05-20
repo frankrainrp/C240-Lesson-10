@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pomodoro App Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 1rem;
+      line-height: 1.5;
+    }
+    .result {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+    .pass {
+      color: green;
+    }
+    .fail {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>Pomodoro App Test</h1>
+  <div id="app">
+    <div id="phaseLabel">Phase</div>
+    <div id="timerText">00:00</div>
+    <button id="startButton">Start</button>
+    <button id="pauseButton">Pause</button>
+    <button id="resumeButton">Resume</button>
+    <button id="resetButton">Reset</button>
+    <button id="resetSessionsButton">Reset Sessions</button>
+    <div id="sessionCounter">0</div>
+    <svg id="progressRing" width="240" height="240" viewBox="0 0 240 240" aria-hidden="true">
+      <circle id="progressCircle" cx="120" cy="120" r="108" fill="none" stroke="#000" stroke-width="8"></circle>
+    </svg>
+  </div>
+
+  <div id="result" class="result">Running test...</div>
+
+  <script src="app.js"></script>
+  <script>
+    function assert(condition, message) {
+      if (!condition) {
+        throw new Error(message || 'Assertion failed');
+      }
+    }
+
+    function report(status, message) {
+      const result = document.getElementById('result');
+      result.textContent = status + (message ? ': ' + message : '');
+      result.className = 'result ' + (status === 'PASS' ? 'pass' : 'fail');
+    }
+
+    window.addEventListener('load', function () {
+      try {
+        assert(window.state, 'App state is not available');
+        assert(window.tick, 'Tick function is not available');
+
+        const label = document.getElementById('phaseLabel');
+        assert(label, 'phaseLabel element is missing');
+
+        // Confirm initial phase is work
+        assert(label.textContent.includes('Work'), 'Initial phase is not Work');
+
+        // Fast-forward timer to completion and trigger the transition
+        state.remainingSeconds = 1;
+        state.duration = state.mode === 'work' ? WORK_DURATION : BREAK_DURATION;
+        tick();
+
+        assert(label.textContent.includes('Break'), 'Phase did not switch to Break after timer completed');
+        report('PASS', 'Phase label switched from Work to Break');
+      } catch (error) {
+        report('FAIL', error.message);
+      }
+    });
+  </script>
+</body>
+</html>
